@@ -49,13 +49,36 @@ class _AppointmentFeeCalculatorState extends State<AppointmentFeeCalculator> {
             CustomButton(
               title: 'Calculate',
               onPressed: () {
+                final consultationFee = double.tryParse(
+                  consultationController.text.trim(),
+                );
+                final serviceFee = double.tryParse(
+                  serviceController.text.trim(),
+                );
+                final serviceCount = int.tryParse(
+                  counterController.text.trim(),
+                );
+                if (consultationFee == null ||
+                    serviceFee == null ||
+                    serviceCount == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter valid numbers'),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+
+                  return;
+                }
                 context.read<AppointmentFeeBloc>().add(
                   CalculateFeeEvent(
-                    consultationFee: double.parse(consultationController.text),
-                    serviceFee: double.parse(serviceController.text),
-                    serviceCount: int.parse(counterController.text),
+                    consultationFee: consultationFee,
+                    serviceFee: serviceFee,
+                    serviceCount: serviceCount,
                   ),
                 );
+                return;
               },
             ),
             const SizedBox(height: 20),
